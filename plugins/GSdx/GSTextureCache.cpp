@@ -1600,6 +1600,16 @@ void GSTextureCache::Target::Update()
 	m_renderer->m_dev->Recycle(t);
 }
 
+void GSTextureCache::Target::UpdateValidity(const GSVector4i& r)
+{
+	m_valid = m_valid.runion(r);
+
+	// TODO: assumption: format is 32 bits
+	uint32 nb_block = m_TEX0.TBW * m_valid.height();
+	m_end_block = m_TEX0.TBP0 + nb_block;
+	//fprintf(stderr, "S: 0x%x E:0x%x\n", m_TEX0.TBP0, m_end_block);
+}
+
 // GSTextureCache::SourceMap
 
 void GSTextureCache::SourceMap::Add(Source* s, const GIFRegTEX0& TEX0, const GSOffset* off)
