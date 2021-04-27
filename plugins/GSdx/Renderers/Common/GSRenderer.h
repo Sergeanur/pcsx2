@@ -42,6 +42,7 @@ protected:
 	int m_interlace;
 	int m_aspectratio;
 	int m_vsync;
+	int m_scanmask;
 	bool m_aa1;
 	bool m_shaderfx;
 	bool m_fxaa;

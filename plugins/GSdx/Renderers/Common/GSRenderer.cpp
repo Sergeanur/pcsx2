@@ -38,6 +38,7 @@ GSRenderer::GSRenderer()
 	, m_real_size(0, 0)
 	, m_wnd()
 	, m_dev(NULL)
+	, m_scanmask(1)
 {
 	m_GStitleInfoBuffer[0] = 0;
 
@@ -227,9 +228,24 @@ bool GSRenderer::Merge(int field)
 			off.x = tex[i]->GetScale().x * frame_diff.x;
 		}
 
-		if (display_diff.y >= 4) // Shouldn't this be >= 2?
+		const float y_scale = m_scanmask == 2 ? 1.0f : tex[i]->GetScale().y;
+
+		bool bDiff = false;
+
+		switch (m_scanmask)
 		{
-			off.y = tex[i]->GetScale().y * display_diff.y;
+			case 1:
+			case 2:
+				bDiff = display_diff.y != 0;
+				break;
+			default:
+				bDiff = display_diff.y >= 4; // Shouldn't this be >= 2?
+				break;
+		}
+
+		if (bDiff)
+		{
+			off.y = y_scale * display_diff.y;
 
 			if (m_regs->SMODE2.INT && m_regs->SMODE2.FFMD)
 			{
@@ -238,7 +254,7 @@ bool GSRenderer::Merge(int field)
 		}
 		else if (display_diff.y != frame_diff.y)
 		{
-			off.y = tex[i]->GetScale().y * frame_diff.y;
+			off.y = y_scale * frame_diff.y;
 		}
 
 		dst[i] = GSVector4(off).xyxy() + scale * GSVector4(r.rsize());

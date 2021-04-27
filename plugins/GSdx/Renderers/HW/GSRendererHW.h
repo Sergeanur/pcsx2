@@ -167,8 +167,6 @@ protected:
 
 	bool m_channel_shuffle;
 
-	int m_scanmask;
-
 	GSVector2i m_lod; // Min & Max level of detail
 	void CustomResolutionScaling();
 
